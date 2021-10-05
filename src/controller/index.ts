@@ -1,10 +1,10 @@
 import express from "express";
 import schoolController from "./school.controller";
-import search from "./search.constoller";
+import searchController from "./search.controller";
 
 const router = express.Router();
 
 router.use("/schools", schoolController);
-router.use("/search", search);
+router.use("/search", searchController);
 
 export default router;
