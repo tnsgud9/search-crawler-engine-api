@@ -55,6 +55,29 @@ router.get("/",async (req,res)=>{
       include:[Link],
     });
 
+    const links = await Link.findAll({
+      include:[{
+        model:Keyword,
+        where:{
+          name:{[Op.in]: Array.from(searchKeywords.values())},
+        },
+        attributes:[],
+        through:{
+          attributes:[],
+        },
+      },
+    ],
+    attributes:[
+      "url",
+      [sequelize.fn("count",sequelize.col("Link.url")),"total"],
+    ],
+    group:["Link.id"],
+    order:[
+      [sequelize.fn('count',sequelize.col('Link.id')),"DESC"],
+    ]    
+  });
+
+/*
     const frequentLink = new Map<string, FrequentLink>();
     keywords.forEach((keyword)=>{
       keyword.links.forEach((link)=>{
@@ -75,8 +98,8 @@ router.get("/",async (req,res)=>{
     const result = Array.from(frequentLink.values()).sort(
       (link1,link2)=>link2.count - link1.count
     );
-
-    return res.status(200).json(result);
+*/
+    return res.status(200).json(links);
 });
 
 export default router;
